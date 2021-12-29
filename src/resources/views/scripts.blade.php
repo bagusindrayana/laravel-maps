@@ -2,4 +2,4 @@
     <script src="{{ $link }}"></script>
 @endforeach
 
-{!! $this->codes !!}
+{!! $codes !!}

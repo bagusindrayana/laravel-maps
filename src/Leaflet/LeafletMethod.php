@@ -102,9 +102,91 @@ class LeafletMethod {
         return $this;
     }
 
+    public function setMethod($name,$arg = null,$options = null)
+    {
+        $argFormat = null;
+        if(is_array($arg)){
+            $argFormat = json_encode($arg);
+        } else {
+            $argFormat = $arg;
+        }
+        if($argFormat){
+            $this->components[] = "{$this->name}.{$name}($argFormat".($options?",".json_encode($options):"").");\r\n";
+        } else {
+            $this->components[] = "{$this->name}.{$name}(".($options?",".json_encode($options):"").");\r\n";
+        }
+        return $this;
+    }
+
+    public function setView($args,$options = null)
+    {
+        $this->setMethod("setView",$args,$options);
+        return $this;
+    }
+
+    public function setZoom($args,$options = null)
+    {
+        $this->setMethod("setZoom",$args,$options);
+        return $this;
+    }
+
+    public function zoomIn($args,$options = null)
+    {
+        $this->setMethod("zoomIn",$args,$options);
+        return $this;
+    }
+
+    public function zoomOut($args,$options = null)
+    {
+        $this->setMethod("zoomOut",$args,$options);
+        return $this;
+    }
+
+    public function setZoomAround($args,$options = null)
+    {
+        $this->setMethod("setZoomAround",$args,$options);
+        return $this;
+    }
+
+    public function fitBounds($args,$options = null)
+    {
+        $this->setMethod("fitBounds",$args,$options);
+        return $this;
+    }
+    
+    public function fitWorld($options = null)
+    {
+        $this->setMethod("fitWorld",null,$options);
+        return $this;
+    }
+
+    public function panTo($args,$options = null)
+    {
+        $this->setMethod("panTo",$args,$options);
+        return $this;
+    }
+
+    public function panBy($args,$options = null)
+    {
+        $this->setMethod("panBy",$args,$options);
+        return $this;
+    }
+
+    public function flyTo($args,$options = null)
+    {
+        $this->setMethod("flyTo",$args,$options);
+        return $this;
+    }
+
+    public function flyToBounds($args,$options = null)
+    {
+        $this->setMethod("flyToBounds",$args,$options);
+        return $this;
+    }
+
     public function locate($options = null)
     {
-        $this->components[] = "{$this->name}.locate(".json_encode($options).");\r\n";
+        $this->setMethod('locate',null,$options);
         return $this;
     }
 

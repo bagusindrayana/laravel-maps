@@ -1,1 +1,1 @@
-{!! $this->elemen !!}
+{!! $elemen !!}

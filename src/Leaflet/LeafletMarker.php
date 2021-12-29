@@ -7,6 +7,7 @@ class LeafletMarker
     public $latLng;
     public $options;
     private $codes;
+    private $components = [];
 
     public function __construct($latLng,$options = null)
     {
@@ -38,15 +39,45 @@ class LeafletMarker
     {
         $leafletMap->marker($this);
         return $this;
+    
+    }
+
+    public function bindPopup($popup)
+    {   
+        $p = null;
+        if($popup instanceof LeafletPopup){
+            $p = $popup;
+            $this->components[] = $p;
+        } else {
+            $p = new LeafletPopup($popup);
+            $this->components[] = $p;
+        }
+        $this->components[] = "{$this->name}.bindPopup(".$p->name.");\r\n";
+        return $this;
+    }
+
+    public function generateComponent()
+    {   
+        $mapName = $this->name;
+        foreach ($this->components as $component) {
+            if(is_string($component)){
+                $this->codes .= $component;
+            } else {
+                $this->codes .= $component->result($mapName);
+            }
+            
+        }
+        return $this->codes;
     }
 
     public function result($mapName)
     {   
         if(is_string($this->latLng)){
-            $this->codes .= "var {$this->name} = L.marker({$this->latLng},".json_encode($this->options).").addTo({$mapName});\r\n";
+            $this->codes .= "var {$this->name} = L.marker({$this->latLng}".($this->options?",".json_encode($this->options):"").").addTo({$mapName});\r\n";
         } else {
-            $this->codes .= "var {$this->name} = L.marker([{$this->latLng[0]}, {$this->latLng[1]}],".json_encode($this->options).").addTo({$mapName});\r\n";
+            $this->codes .= "var {$this->name} = L.marker(".json_encode($this->latLng).($this->options?",".json_encode($this->options):"").").addTo({$mapName});\r\n";
         }
+        $this->generateComponent();
         
         return $this->codes;
     }

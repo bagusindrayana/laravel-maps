@@ -4,9 +4,10 @@ namespace Bagusindrayana\LaravelMaps\Leaflet;
 use Bagusindrayana\LaravelMaps\Leaflet\Event\LeafletEvent;
 
 class LeafletMap extends LeafletMethod
-{
-    public $css = "https://unpkg.com/leaflet@1.7.1/dist/leaflet.css";
-    public $js = "https://unpkg.com/leaflet@1.7.1/dist/leaflet.js";
+{   
+    public $zoom = 10;
+    public $css = ["https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"];
+    public $js = ["https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"];
     public $name = "leafletMap";
     public $latLng;
     public $options = [];
@@ -18,7 +19,7 @@ class LeafletMap extends LeafletMethod
         $this->name = $name ?? $this->name;
         $this->latLng = $latLng ?? $this->latLng;
         $this->options = $options ?? $this->options; 
-        $this->elemen = "<div id='{$this->name}'></div>";
+        $this->elemen = "<div id='{$this->name}' style='width:100%;height:100vh;'></div>";
         
     }
 
@@ -29,12 +30,6 @@ class LeafletMap extends LeafletMethod
     }
 
     public function latLng($latLng)
-    {
-        $this->latLng = $latLng;
-        return $this;
-    }
-
-    public function setView($latLng)
     {
         $this->latLng = $latLng;
         return $this;
@@ -79,7 +74,7 @@ class LeafletMap extends LeafletMethod
     {   
 
         return  view("laravel-maps::styles",[
-            "styles" => $this->css,
+            "styles" => is_array($this->css)?$this->css:[$this->css],
         ]);
         
     }
@@ -88,7 +83,7 @@ class LeafletMap extends LeafletMethod
     {   
         
         return  view("laravel-maps::scripts",[
-            "scripts" => $this->js,
+            "scripts" => is_array($this->js)?$this->js:[$this->js],
             "codes"=>$this->codes
         ]);
         
@@ -98,15 +93,13 @@ class LeafletMap extends LeafletMethod
     {   
         $this->codes .= "
         <script>
-            var {$this->name} = L.map('{$this->name}').setView([{$this->latLng[0]}, {$this->latLng[1]}], 13);
-            ";
-        $this->generateComponent();
-        $this->codes .= "
+            var {$this->name} = L.map('{$this->name}').setView(".json_encode($this->latLng).", $this->zoom);";
+            $this->generateComponent();
+            $this->codes .= "
             L.tileLayer('{$this->tileLayer}', {
                 attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'
             }).addTo({$this->name});
-        </script>
-        ";
+        </script>";
 
         return $this->codes;
     }
