@@ -1,0 +1,18 @@
+{
+    "name": "bagusindrayana/laravel-maps",
+    "description": "set mapbox and leaflet map initiation from within laravel",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Bagusindrayana\\LaravelMaps\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Bagus Indrayana",
+            "email": "bagusindrayanaindo@gmail.com"
+        }
+    ],
+    "require": {}
+}
