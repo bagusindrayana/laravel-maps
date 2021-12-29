@@ -6,15 +6,17 @@ use Bagusindrayana\LaravelMaps\Leaflet\Event\LeafletEvent;
 class LeafletMap extends LeafletMethod
 {   
     
-    public $css = ["https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"];
-    public $js = ["https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"];
+    public $css;
+    public $js;
     public $name = "leafletMap";
     public $options = [];
     public $tileLayer = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
     private $elemen;
 
     public function __construct($name = null, $latLng = null, $options = null)
-    {
+    {   
+        $this->css =  config("laravel-maps.leaflet.css");
+        $this->js = config("laravel-maps.leaflet.js");
         $this->name = $name ?? $this->name;
         $this->latLng = $latLng ?? $this->latLng;
         $this->options = $options ?? $this->options; 

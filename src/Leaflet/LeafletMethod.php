@@ -199,6 +199,15 @@ class LeafletMethod {
         return $this;
     }
 
+    public function addPopup($contents,$latLng)
+    {
+        $popup = new LeafletPopup();
+        $popup->latlng($latLng)
+        ->contents($contents)
+        ->openOn($this);
+        return $this;
+    }
+
     public function generateComponent()
     {   
         $mapName = $this->name;
