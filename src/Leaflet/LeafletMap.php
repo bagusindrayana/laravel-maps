@@ -1,8 +1,6 @@
 <?php
 namespace Bagusindrayana\LaravelMaps\Leaflet;
 
-use Bagusindrayana\LaravelMaps\Leaflet\Event\LeafletEvent;
-
 class LeafletMap extends LeafletMethod
 {   
     
@@ -13,15 +11,20 @@ class LeafletMap extends LeafletMethod
     public $tileLayer = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
     private $elemen;
 
-    public function __construct($name = null, $latLng = null, $options = null)
+    public function __construct($name = null, $options = null)
+    {   
+        
+        $this->init($name, $options);
+        
+    }
+
+    public function init($name = null, $options = null)
     {   
         $this->css =  config("laravel-maps.leaflet.css");
         $this->js = config("laravel-maps.leaflet.js");
         $this->name = $name ?? $this->name;
-        $this->latLng = $latLng ?? $this->latLng;
         $this->options = $options ?? $this->options; 
-        
-        
+        return $this;
     }
 
     public function tileLayer($tileLayer)
@@ -73,7 +76,6 @@ class LeafletMap extends LeafletMethod
 
     public function styles()
     {   
-
         return  view("laravel-maps::styles",[
             "styles" => is_array($this->css)?$this->css:[$this->css],
         ]);
@@ -94,10 +96,12 @@ class LeafletMap extends LeafletMethod
     {   
         $this->codes .= "
         <script>
-            var {$this->name} = L.map('{$this->name}')";
+            var {$this->name} = L.map('{$this->name}',".json_encode($this->options).")";
             $this->generateComponent();
+            if($this->latLng){
+                $this->code .= "{$this->name}.setView(".json_encode($this->latLng).", $this->zoom);";
+            }
             $this->codes .= "
-            {$this->name}.setView(".json_encode($this->latLng).", $this->zoom);
             L.tileLayer('{$this->tileLayer}', {
                 attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'
             }).addTo({$this->name});

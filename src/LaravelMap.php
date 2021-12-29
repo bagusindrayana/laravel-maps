@@ -2,7 +2,7 @@
 namespace Bagusindrayana\LaravelMaps;
 
 use Bagusindrayana\LaravelMaps\Leaflet\LeafletMap;
-use Bagusindrayana\LaravelMaps\Leaflet\LeafletMethod;
+use Bagusindrayana\LaravelMaps\Mapbox\MapboxMap;
 
 class LaravelMap {
 
@@ -15,7 +15,9 @@ class LaravelMap {
             case 'leaflet':
                 $map = new LeafletMap();
                 break;
-            
+            case 'mapbox':
+                $map = new MapboxMap();
+                break;
             default:
                 # code...
                 break;
@@ -23,9 +25,13 @@ class LaravelMap {
         return $map;
     }
 
-    // public function __call($method, $arguments)
-    // {
-    //     $method = new LeafletMethod($method, $arguments);
-    //     return $method;
-    // }
+    public static function leaflet($name,$options)
+    {
+        return new LeafletMap($name,$options);
+    }
+
+    public static function mapbox($name,$options)
+    {
+        return new MapboxMap($name,$options);
+    }
 }
