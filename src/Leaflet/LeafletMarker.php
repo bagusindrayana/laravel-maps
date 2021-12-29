@@ -41,9 +41,13 @@ class LeafletMarker
     }
 
     public function result($mapName)
-    {
-        $this->codes .= "
-var {$this->name} = L.marker([{$this->latLng[0]}, {$this->latLng[1]}],".json_encode($this->options).").addTo({$mapName});\r\n";
+    {   
+        if(is_string($this->latLng)){
+            $this->codes .= "var {$this->name} = L.marker({$this->latLng},".json_encode($this->options).").addTo({$mapName});\r\n";
+        } else {
+            $this->codes .= "var {$this->name} = L.marker([{$this->latLng[0]}, {$this->latLng[1]}],".json_encode($this->options).").addTo({$mapName});\r\n";
+        }
+        
         return $this->codes;
     }
 

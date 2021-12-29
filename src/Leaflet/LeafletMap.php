@@ -3,20 +3,21 @@ namespace Bagusindrayana\LaravelMaps\Leaflet;
 
 use Bagusindrayana\LaravelMaps\Leaflet\Event\LeafletEvent;
 
-class LeafletMap
+class LeafletMap extends LeafletMethod
 {
     public $css = "https://unpkg.com/leaflet@1.7.1/dist/leaflet.css";
     public $js = "https://unpkg.com/leaflet@1.7.1/dist/leaflet.js";
     public $name = "leafletMap";
     public $latLng;
     public $options = [];
-    public $components = [];
     public $tileLayer = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
     private $elemen;
-    private $codes;
 
-    public function __construct()
-    {   
+    public function __construct($name = null, $latLng = null, $options = null)
+    {
+        $this->name = $name ?? $this->name;
+        $this->latLng = $latLng ?? $this->latLng;
+        $this->options = $options ?? $this->options; 
         $this->elemen = "<div id='{$this->name}'></div>";
         
     }
@@ -73,49 +74,6 @@ class LeafletMap
         return $this;
     }
 
-    public function marker($latLng,$options = null)
-    {   
-        if(isset($latLng[0][0]) && is_array($latLng[0][0])){
-            
-            foreach ($latLng as $marker) {
-                $this->addMarker($marker);
-            }
-        } else {
-            $this->addMarker([$latLng,$options]);
-            
-        }
-
-        return $this;
-    }
-
-    private function addMarker($marker)
-    {   
-        
-        if($marker instanceof LeafletMarker){
-            $this->components[] = $marker->name('marker'.count($this->components));
-        } else {
-            $marker = new LeafletMarker($marker[0],$marker[1] ?? null);
-            $this->components[] = $marker->name('marker'.count($this->components));
-        }
-    }
-
-    public function on($eventName,$fun = null)
-    {   
-        $map = new LeafletMap();
-        $map->name($this->name);
-        $map->latLng($this->latLng);
-        $fun($map);
-        
-        if($eventName instanceof LeafletEvent){
-            $this->components[] = $eventName;
-        } else {
-            $eventName = new LeafletEvent($eventName);
-            $eventName->components = $map->getComponents();
-            $this->components[] = $eventName;
-        }
-        return $this;
-        
-    }
 
     public function styles()
     {   
@@ -136,23 +94,7 @@ class LeafletMap
         
     }
 
-    private function generateComponent()
-    {   
-        // $this->code = "";
-        $mapName = $this->name;
-        foreach ($this->components as $component) {
-            $this->codes .= $component->result($mapName);
-        }
-        return $this->codes;
-    }
-
-    public function getComponents()
-    {
-        return $this->components;
-    }
-
-
-    public function result()
+    public function result($mapName = null)
     {   
         $this->codes .= "
         <script>

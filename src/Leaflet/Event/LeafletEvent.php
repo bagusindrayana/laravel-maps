@@ -1,13 +1,13 @@
 <?php
 namespace Bagusindrayana\LaravelMaps\Leaflet\Event;
 
-class LeafletEvent {
+use Bagusindrayana\LaravelMaps\Leaflet\LeafletMethod;
+
+class LeafletEvent extends LeafletMethod {
     public $type;
     public $target;
     public $sourceTarget;
     public $propagatedFrom;
-    public $components = [];
-    private $codes;
 
     public function __construct($type, $target = null, $sourceTarget = null, $propagatedFrom = null)
     {
@@ -18,23 +18,11 @@ class LeafletEvent {
         $this->propagatedFrom = $propagatedFrom;
     }
 
-    public function getComponents()
-    {
-        return $this->components;
-    }
 
-    private function generateComponent($mapName)
-    {   
-        foreach ($this->components as $component) {
-            $this->codes .= $component->result($mapName);
-        }
-        return $this->codes;
-    }
-
-    public function result($mapName)
+    public function result($mapName = null)
     {   
         $this->codes .= "
-        {$mapName}.on('{$this->type}',function({";
+        {$mapName}.on('{$this->type}',function(){\r\n";
         $this->generateComponent($mapName);
         $this->codes .= "});\r\n";
         return $this->codes;
