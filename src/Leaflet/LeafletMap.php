@@ -5,11 +5,10 @@ use Bagusindrayana\LaravelMaps\Leaflet\Event\LeafletEvent;
 
 class LeafletMap extends LeafletMethod
 {   
-    public $zoom = 10;
+    
     public $css = ["https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"];
     public $js = ["https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"];
     public $name = "leafletMap";
-    public $latLng;
     public $options = [];
     public $tileLayer = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
     private $elemen;
@@ -19,7 +18,7 @@ class LeafletMap extends LeafletMethod
         $this->name = $name ?? $this->name;
         $this->latLng = $latLng ?? $this->latLng;
         $this->options = $options ?? $this->options; 
-        $this->elemen = "<div id='{$this->name}' style='width:100%;height:100vh;'></div>";
+        
         
     }
 
@@ -93,9 +92,10 @@ class LeafletMap extends LeafletMethod
     {   
         $this->codes .= "
         <script>
-            var {$this->name} = L.map('{$this->name}').setView(".json_encode($this->latLng).", $this->zoom);";
+            var {$this->name} = L.map('{$this->name}')";
             $this->generateComponent();
             $this->codes .= "
+            {$this->name}.setView(".json_encode($this->latLng).", $this->zoom);
             L.tileLayer('{$this->tileLayer}', {
                 attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'
             }).addTo({$this->name});
@@ -107,6 +107,7 @@ class LeafletMap extends LeafletMethod
     public function render()
     {   
         $this->result();
+        $this->elemen = "<div id='{$this->name}' style='width:100%;height:100vh;'></div>";
         return  view("laravel-maps::render",[
             "elemen"=>$this->elemen,
             

@@ -21,6 +21,7 @@ class LeafletEvent extends LeafletMethod {
 
     public function result($mapName = null)
     {   
+        $this->name = $mapName;
         $this->codes .= "
         {$mapName}.on('{$this->type}',function(){\r\n";
         $this->generateComponent($mapName);

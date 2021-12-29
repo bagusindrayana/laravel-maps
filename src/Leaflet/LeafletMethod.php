@@ -5,6 +5,8 @@ use Bagusindrayana\LaravelMaps\Leaflet\Event\LeafletEvent;
 use Bagusindrayana\LaravelMaps\RawJs;
 
 class LeafletMethod {
+    public $zoom = 10;
+    public $latLng;
     public $name;
     public $components = [];
     public $codes;
@@ -42,14 +44,18 @@ class LeafletMethod {
 
     public function marker($latLng,$options = null)
     {   
-        if(isset($latLng[0][0]) && is_array($latLng[0][0])){
-            
-            foreach ($latLng as $marker) {
-                $this->addMarker($marker);
-            }
+        if($latLng instanceof LeafletMarker){
+            $this->addMarker($latLng);
         } else {
-            $this->addMarker([$latLng,$options]);
+            if(isset($latLng[0][0]) && is_array($latLng[0][0])){
             
+                foreach ($latLng as $marker) {
+                    $this->addMarker($marker);
+                }
+            } else {
+                $this->addMarker([$latLng,$options]);
+                
+            }
         }
 
         return $this;
@@ -118,15 +124,18 @@ class LeafletMethod {
         return $this;
     }
 
-    public function setView($args,$options = null)
-    {
-        $this->setMethod("setView",$args,$options);
+    public function setView($latLng,$zoom = null)
+    {   
+        $this->latLng = $latLng;
+        if($zoom){
+            $this->setZoom($zoom);
+        }
         return $this;
     }
 
-    public function setZoom($args,$options = null)
+    public function setZoom($zoom)
     {
-        $this->setMethod("setZoom",$args,$options);
+        $this->zoom = $zoom;
         return $this;
     }
 

@@ -47,12 +47,11 @@ class LeafletMarker
         $p = null;
         if($popup instanceof LeafletPopup){
             $p = $popup;
-            $this->components[] = $p;
         } else {
             $p = new LeafletPopup($popup);
-            $this->components[] = $p;
         }
-        $this->components[] = "{$this->name}.bindPopup(".$p->name.");\r\n";
+        $p->bind = true;
+        $this->components[] = $p;
         return $this;
     }
 
