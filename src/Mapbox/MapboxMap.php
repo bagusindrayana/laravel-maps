@@ -1,7 +1,7 @@
 <?php
 namespace Bagusindrayana\LaravelMaps\Mapbox;
 
-class MapboxMap {
+class MapboxMap extends MapboxMethod {
     public $css;
     public $js;
     public $name = "mapboxMap";
@@ -21,13 +21,19 @@ class MapboxMap {
 
     public function init($name = null, $options = null)
     {   
+        
         $this->css =  config("laravel-maps.mapbox.css");
         $this->js = config("laravel-maps.mapbox.js");
-        $this->name = $name ?? $this->name;
-        $this->options = $options ?? $this->options; 
+        if(is_array($name)){
+            $this->options = $options ?? $this->options;
+        } else {
+            $this->name = $name ?? $this->name;
+            $this->options = $options ?? $this->options;
+        }
         return $this;
     }
 
+   
     public function styles()
     {   
         return  view("laravel-maps::styles",[
@@ -46,19 +52,6 @@ class MapboxMap {
         
     }
 
-    public function generateComponent()
-    {   
-        $mapName = $this->name;
-        foreach ($this->components as $component) {
-            if(is_string($component)){
-                $this->codes .= $component;
-            } else {
-                $this->codes .= $component->result($mapName);
-            }
-            
-        }
-        return $this->codes;
-    }
 
     public function result($mapName = null)
     {   

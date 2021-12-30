@@ -1,7 +1,7 @@
 <?php
-namespace Bagusindrayana\LaravelMaps\Leaflet\Event;
+namespace Bagusindrayana\LaravelMaps\Mapbox\Event;
 
-class LeafletMouseEvent extends LeafletEvent {
+class MapboxMouseEvent extends MapboxEvent {
     
     public function result($mapName = null)
     {   

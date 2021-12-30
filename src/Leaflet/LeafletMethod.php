@@ -42,20 +42,30 @@ class LeafletMethod {
         return $this;
     }
 
-    public function marker($latLng,$options = null)
+    public function marker($latLng)
     {   
         if($latLng instanceof LeafletMarker){
             $this->addMarker($latLng);
         } else {
-            if(isset($latLng[0][0]) && is_array($latLng[0][0])){
-            
-                foreach ($latLng as $marker) {
-                    $this->addMarker($marker);
+            if(is_array($latLng)){
+                if(count($latLng) == 2 && isset($latLng[0]) && isset($latLng[1]) && !is_array($latLng[0]) && !is_array($latLng[1])){
+                    $this->addMarker($latLng);
+                } else {
+                    foreach ($latLng as $key => $arr) {
+                        if(!is_string($key)){
+                            $this->addMarker($arr);
+                        } else if($arr instanceof LeafletMarker){
+                            $this->addMarker($arr);
+                        } else {
+                            $marker = new LeafletMarker($arr);
+                            $marker->name($key);
+                            $this->addMarker($marker);
+                        }
+                        
+                    }
                 }
-            } else {
-                $this->addMarker([$latLng,$options]);
-                
             }
+            
         }
 
         return $this;
@@ -65,10 +75,11 @@ class LeafletMethod {
     {   
         
         if($marker instanceof LeafletMarker){
-            $this->components[] = $marker->name('marker'.count($this->components));
+            $this->components[] = $marker;
         } else {
-            $marker = new LeafletMarker($marker[0],$marker[1] ?? null);
-            $this->components[] = $marker->name('marker'.count($this->components));
+            $marker = new LeafletMarker($marker);
+            $marker->name('marker'.count($this->components));
+            $this->components[] = $marker;
         }
     }
 
