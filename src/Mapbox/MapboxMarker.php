@@ -85,7 +85,7 @@ class MapboxMarker
             $this->codes .= "var {$this->name} = new mapboxgl.Marker(".($this->options?json_encode($this->options):"").").setLngLat(".json_encode($this->lngLat).");\r\n";
         }
         if($mapName){
-            $this->code .= "{$this->name}.addTo({$mapName});\r\n";
+            $this->codes .= "{$this->name}.addTo({$mapName});\r\n";
         }
         $this->generateComponent();
         

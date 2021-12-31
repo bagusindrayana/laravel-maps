@@ -2,6 +2,7 @@
 namespace Bagusindrayana\LaravelMaps\Mapbox;
 
 use Bagusindrayana\LaravelMaps\Mapbox\Event\MapboxEvent;
+use ReflectionFunction;
 
 class MapboxMethod {
     public $name = "mapboxMap";
@@ -89,16 +90,25 @@ class MapboxMethod {
         return $this;
     }
 
-    public function addMarker($marker)
+    public function addMarker($marker,$options = null)
     {   
-        
-        if($marker instanceof MapboxMarker){
+        if(!is_array($marker)){
+            try {
+                $reflection = new ReflectionFunction($marker);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+        }
+        if(isset($reflection) && $reflection->isClosure()){
+            $m = new MapboxMarker([]);
+            $this->components[] = $marker($m);
+        } else if($marker instanceof MapboxMarker){
             $this->components[] = $marker;
         } else {
-            $marker = new MapboxMarker($marker);
-            $marker->name('marker'.count($this->components));
+            $marker = new MapboxMarker($marker,$options);
             $this->components[] = $marker;
         }
+        return $this;
     }
 
     public function on($eventName,$fun = null)
