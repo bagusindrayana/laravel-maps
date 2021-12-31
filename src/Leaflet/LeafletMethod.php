@@ -3,6 +3,7 @@ namespace Bagusindrayana\LaravelMaps\Leaflet;
 
 use Bagusindrayana\LaravelMaps\Leaflet\Event\LeafletEvent;
 use Bagusindrayana\LaravelMaps\RawJs;
+use ReflectionFunction;
 
 class LeafletMethod {
     public $zoom = 10;
@@ -22,7 +23,7 @@ class LeafletMethod {
             'zoomend',
             'moveend',
         ],
-        "\Bagusindrayana\LaravelMaps\Leaflet\Event\LeafletMouseEvent"=>[
+        "\Bagusindrayana\LaravelMaps\Leaflet\Event\LeafletResponseEvent"=>[
             'click',
             'dblclick',
             'mousedown',
@@ -31,6 +32,8 @@ class LeafletMethod {
             'mouseout',
             'mousemove',
             'contextmenu',
+            'locationfound',
+            'locationerror'
         ],
     ];
 
@@ -71,16 +74,186 @@ class LeafletMethod {
         return $this;
     }
 
-    public function addMarker($marker)
+    public function addMarker($marker,$options = null)
     {   
-        
-        if($marker instanceof LeafletMarker){
+        if(!is_array($marker)){
+            try {
+                $reflection = new ReflectionFunction($marker);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+        }
+        if(isset($reflection) && $reflection->isClosure()){
+            $m = new LeafletMarker([]);
+            $this->components[] = $marker($m);
+        } else if($marker instanceof LeafletMarker){
             $this->components[] = $marker;
         } else {
-            $marker = new LeafletMarker($marker);
-            $marker->name('marker'.count($this->components));
+            $marker = new LeafletMarker($marker,$options);
             $this->components[] = $marker;
         }
+        return $this;
+    }
+
+    public function circle($latLng,$options = null)
+    {   
+        if($latLng instanceof LeafletCircle){
+            $this->addCircle($latLng);
+        } else {
+            if(is_array($latLng)){
+                if(count($latLng) == 2 && isset($latLng[0]) && isset($latLng[1]) && !is_array($latLng[0]) && !is_array($latLng[1])){
+                    $this->addCircle($latLng);
+                } else {
+                    foreach ($latLng as $key => $arr) {
+                        if(!is_string($key)){
+                            $this->addCircle($arr);
+                        } else if($arr instanceof LeafletCircle){
+                            $this->addCircle($arr);
+                        } else {
+                            $circle = new LeafletCircle($arr);
+                            $circle->name($key);
+                            $this->addCircle($circle);
+                        }
+                        
+                    }
+                }
+            }
+            
+        }
+
+        return $this;
+    }
+
+    public function addCircle($circle,$options = null)
+    {   
+        
+        $reflection = new ReflectionFunction($circle);
+        if($reflection->isClosure()){
+            $m = new LeafletCircle([]);
+            $this->components[] = $circle($m);
+        } else if($circle instanceof LeafletCircle){
+            $this->components[] = $circle;
+        } else {
+            $circle = new LeafletCircle($circle,$options);
+            $this->components[] = $circle;
+        }
+        return $this;
+    }
+
+
+    public function polygon($latLng)
+    {   
+        if($latLng instanceof LeafletPolygon){
+            $this->addPolygon($latLng);
+        } else {
+            if(is_array($latLng)){
+                if(count($latLng) == 2 && isset($latLng[0]) && isset($latLng[1]) && !is_array($latLng[0]) && !is_array($latLng[1])){
+                    $this->addPolygon($latLng);
+                } else {
+                    foreach ($latLng as $key => $arr) {
+                        if(!is_string($key)){
+                            $this->addPolygon($arr);
+                        } else if($arr instanceof LeafletPolygon){
+                            $this->addPolygon($arr);
+                        } else {
+                            $polygon = new LeafletPolygon($arr);
+                            $polygon->name($key);
+                            $this->addPolygon($polygon);
+                        }
+                        
+                    }
+                }
+            }
+            
+        }
+
+        return $this;
+    }
+
+    public function addPolygon($polygon,$options = null)
+    {   
+        
+        if(!is_array($polygon)){
+            try {
+                $reflection = new ReflectionFunction($polygon);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+        }
+        if(isset($reflection) && $reflection->isClosure()){
+            $m = new LeafletPolygon([]);
+            $this->components[] = $polygon($m);
+        } else if($polygon instanceof LeafletPolygon){
+            $this->components[] = $polygon;
+        } else {
+            $polygon = new LeafletPolygon($polygon,$options);
+            $this->components[] = $polygon;
+        }
+        return $this;
+    }
+
+    public function geojson($latLng)
+    {   
+        if($latLng instanceof LeafletGeojson){
+            $this->addGeojson($latLng);
+        } else {
+            if(is_array($latLng)){
+                if(count($latLng) == 2 && isset($latLng[0]) && isset($latLng[1]) && !is_array($latLng[0]) && !is_array($latLng[1])){
+                    $this->addGeojson($latLng);
+                } else {
+                    foreach ($latLng as $key => $arr) {
+                        if(!is_string($key)){
+                            $this->addGeojson($arr);
+                        } else if($arr instanceof LeafletGeojson){
+                            $this->addGeojson($arr);
+                        } else {
+                            $geojson = new LeafletGeojson($arr);
+                            $geojson->name($key);
+                            $this->addGeojson($geojson);
+                        }
+                        
+                    }
+                }
+            }
+            
+        }
+
+        return $this;
+    }
+
+    public function addGeojson($geojson,$options = null)
+    {   
+        
+        if(!is_array($geojson)){
+            try {
+                $reflection = new ReflectionFunction($geojson);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+        }
+        if(isset($reflection) && $reflection->isClosure()){
+            $m = new LeafletGeojson([]);
+            $this->components[] = $geojson($m);
+        } else if($geojson instanceof LeafletGeojson){
+            $this->components[] = $geojson;
+        } else {
+            $geojson = new LeafletGeojson($geojson,$options);
+            $this->components[] = $geojson;
+        }
+        return $this;
+    }    
+
+    public function addPopup($contents,$latLng)
+    {
+        if($contents instanceof LeafletPopup){
+            $this->components[] = $contents;
+        } else {
+            $popup = new LeafletPopup();
+            $popup->latLng($latLng)
+            ->contents($contents)
+            ->openOn($this);
+        }
+        return $this;
     }
 
     public function on($eventName,$fun = null)
@@ -98,7 +271,7 @@ class LeafletMethod {
             }
             
         }
-        if(!isset($eventName)){
+        if(!is_object($eventName)){
             $eventName = new LeafletEvent($eventName);
             $this->components[] = $eventName;
         }
@@ -130,7 +303,7 @@ class LeafletMethod {
         if($argFormat){
             $this->components[] = "{$this->name}.{$name}($argFormat".($options?",".json_encode($options):"").");\r\n";
         } else {
-            $this->components[] = "{$this->name}.{$name}(".($options?",".json_encode($options):"").");\r\n";
+            $this->components[] = "{$this->name}.{$name}(".($options?json_encode($options):"").");\r\n";
         }
         return $this;
     }
@@ -210,14 +383,6 @@ class LeafletMethod {
         return $this;
     }
 
-    public function addPopup($contents,$latLng)
-    {
-        $popup = new LeafletPopup();
-        $popup->latlng($latLng)
-        ->contents($contents)
-        ->openOn($this);
-        return $this;
-    }
 
     public function generateComponent()
     {   

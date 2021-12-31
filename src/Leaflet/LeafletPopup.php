@@ -8,7 +8,7 @@ class LeafletPopup
     public $name = "popup";
     public $contents;
     private $codes;
-    public $latlng;
+    public $latLng;
     public $openPopup;
     public $openOn;
     public $bind;
@@ -26,15 +26,15 @@ class LeafletPopup
         return $this;
     }
 
-    public function setLatLng($latlng)
+    public function setLatLng($latLng)
     {
-        $this->latlng = $latlng;
+        $this->latLng = $latLng;
         return $this;
     }
 
-    public function latlng($latlng)
+    public function latLng($latLng)
     {
-        $this->latlng = $latlng;
+        $this->latLng = $latLng;
         return $this;
     }
 
@@ -67,14 +67,14 @@ class LeafletPopup
         return $this;
     }
 
-    public function result($markerName = null)
+    public function result($objectName = null)
     {   
         $this->codes .= "var {$this->name} = L.popup().setContent(".$this->contents.");\r\n";
         if($this->bind){
-            $this->codes .= "{$markerName}.bindPopup(".$this->name.");\r\n";
+            $this->codes .= "{$objectName}.bindPopup(".$this->name.");\r\n";
         }
-        if($this->latlng){
-            $this->codes .= "{$this->name}.setLatLng(".json_encode($this->latlng).");\r\n";
+        if($this->latLng){
+            $this->codes .= "{$this->name}.setLatLng(".json_encode($this->latLng).");\r\n";
         }
         if($this->openPopup){
             $this->codes .= "{$this->name}.openPopup();\r\n";

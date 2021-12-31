@@ -13,4 +13,9 @@ class RawJs {
     {
         return $this->codes;
     }
+
+    public static function raw($codes)
+    {
+        return $codes;
+    }
 }

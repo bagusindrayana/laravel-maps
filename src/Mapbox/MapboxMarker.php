@@ -77,12 +77,15 @@ class MapboxMarker
         return $this->codes;
     }
 
-    public function result($mapName)
+    public function result($mapName = null)
     {   
         if(is_string($this->lngLat)){
-            $this->codes .= "var {$this->name} = new mapboxgl.Marker(".($this->options?json_encode($this->options):"").").setLngLat(".$this->lngLat.").addTo({$mapName});\r\n";
+            $this->codes .= "var {$this->name} = new mapboxgl.Marker(".($this->options?json_encode($this->options):"").").setLngLat(".$this->lngLat.");\r\n";
         } else {
-            $this->codes .= "var {$this->name} = new mapboxgl.Marker(".($this->options?json_encode($this->options):"").").setLngLat(".json_encode($this->lngLat).").addTo({$mapName});\r\n";
+            $this->codes .= "var {$this->name} = new mapboxgl.Marker(".($this->options?json_encode($this->options):"").").setLngLat(".json_encode($this->lngLat).");\r\n";
+        }
+        if($mapName){
+            $this->code .= "{$this->name}.addTo({$mapName});\r\n";
         }
         $this->generateComponent();
         

@@ -25,12 +25,12 @@ class LaravelMap {
         return $map;
     }
 
-    public static function leaflet($name,$options)
+    public static function leaflet($name,$options = null)
     {
         return new LeafletMap($name,$options);
     }
 
-    public static function mapbox($name,$options)
+    public static function mapbox($name,$options = null)
     {
         return new MapboxMap($name,$options);
     }

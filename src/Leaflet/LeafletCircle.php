@@ -1,9 +1,9 @@
 <?php
 namespace Bagusindrayana\LaravelMaps\Leaflet;
 
-class LeafletMarker
+class LeafletCircle
 {
-    public $name = "marker";
+    public $name = "circle";
     public $latLng;
     public $options;
     private $codes;
@@ -34,17 +34,13 @@ class LeafletMarker
 
     public function options($options)
     {
-        if(isset($this->options) && count($this->options) > 0){
-            $this->options = array_merge($this->options,$options);
-        } else {
-            $this->options = $options;
-        }
+        $this->options = $options;
         return $this;
     }
 
     public function addTo(LeafletMap $leafletMap)
     {
-        $leafletMap->marker($this);
+        $leafletMap->circle($this);
         return $this;
     
     }
@@ -62,36 +58,26 @@ class LeafletMarker
         return $this;
     }
 
-    public function icon($options)
-    {
-        $this->codes .= "var ".$this->name."Icon = L.icon(".json_encode($options).");\r\n";
-        $this->options(['icon' => $this->name."Icon"]);
-        return $this;
-    }
-
     public function generateComponent()
     {   
-        $mapName = $this->name;
+        $circleName = $this->name;
         foreach ($this->components as $component) {
             if(is_string($component)){
                 $this->codes .= $component;
             } else {
-                $this->codes .= $component->result($mapName);
+                $this->codes .= $component->result($circleName);
             }
             
         }
         return $this->codes;
     }
 
-    public function result($mapName)
+    public function result($mapName = null)
     {   
         if(is_string($this->latLng)){
-            $this->codes .= "var {$this->name} = L.marker({$this->latLng}".($this->options?",".json_encode($this->options):"").");\r\n";
+            $this->codes .= "var {$this->name} = L.circle({$this->latLng}".($this->options?",".json_encode($this->options):"").");\r\n";
         } else {
-            $this->codes .= "var {$this->name} = L.marker(".json_encode($this->latLng).($this->options?",".json_encode($this->options):"").");\r\n";
-        }
-        if(isset($this->options['icon'])){
-            $this->codes .= "{$this->name}.setIcon(".$this->options['icon'].");\r\n";
+            $this->codes .= "var {$this->name} = L.circle(".json_encode($this->latLng).($this->options?",".json_encode($this->options):"").");\r\n";
         }
         if($mapName){
             $this->codes .= "{$this->name}.addTo({$mapName});\r\n";

@@ -96,10 +96,12 @@ class LeafletMap extends LeafletMethod
     {   
         $this->codes .= "
         <script>
-            var {$this->name} = L.map('{$this->name}',".json_encode($this->options).")";
+            var {$this->name} = L.map('{$this->name}',".json_encode($this->options).");";
             $this->generateComponent();
             if($this->latLng){
-                $this->code .= "{$this->name}.setView(".json_encode($this->latLng).", $this->zoom);";
+                $this->codes .= "{$this->name}.setView(".json_encode($this->latLng).", $this->zoom);";
+            } else {
+                $this->codes .= "{$this->name}.fitWorld();";
             }
             $this->codes .= "
             L.tileLayer('{$this->tileLayer}', {
