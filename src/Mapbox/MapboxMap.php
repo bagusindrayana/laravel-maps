@@ -74,7 +74,6 @@ class MapboxMap extends MapboxMethod {
 
     public function render()
     {   
-        $this->result();
         $this->elemen = "<div id='".($this->options["container"] ?? $this->name)."' style='width:100%;height:100vh;'></div>";
         return  view("laravel-maps::render",[
             "elemen"=>$this->elemen,
