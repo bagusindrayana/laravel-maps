@@ -68,7 +68,7 @@ $map = LaravelMaps::leaflet('map')
 ### Basic Usage
 
 ```php
-$map = LaravelMaps::mapbox('xdxd',[
+$map = LaravelMaps::mapbox('map',[
     "center"=>[106.827293,-6.174465],
     "zoom"=>13,
 ]);
