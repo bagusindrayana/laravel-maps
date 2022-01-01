@@ -13,7 +13,6 @@ class LaravelMapsServiceProvider extends ServiceProvider
      */
     public function register()
     {   
-        $this->app->register('Bagusindrayana\LaravelMaps\LaravelMapsServiceProvider::class');
         $this->mergeConfigFrom(__DIR__.'/resources/config/laravel-maps.php', 'laravel-maps');
         
     }
