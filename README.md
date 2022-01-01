@@ -11,7 +11,7 @@ Add LaravelMapServiceProvider::class to config/app.php
     'providers'=>[
         //....
 
-        Bagusindrayana\LaravelMaps\LaravelMapServiceProvider::class,
+        Bagusindrayana\LaravelMaps\LaravelMapsServiceProvider::class,
 
         //...
     ],
