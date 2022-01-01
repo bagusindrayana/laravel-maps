@@ -4,7 +4,7 @@ namespace Bagusindrayana\LaravelMaps;
 use Bagusindrayana\LaravelMaps\Leaflet\LeafletMap;
 use Bagusindrayana\LaravelMaps\Mapbox\MapboxMap;
 
-class LaravelMap {
+class LaravelMaps {
 
     public $provider;
 
