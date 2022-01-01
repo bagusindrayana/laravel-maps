@@ -14,5 +14,12 @@
             "email": "bagusindrayanaindo@gmail.com"
         }
     ],
-    "require": {}
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bagusindrayana\\LaravelMaps\\LaravelMapsServiceProvider"
+            ]
+        }
+    }
 }
