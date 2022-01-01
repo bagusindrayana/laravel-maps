@@ -2,6 +2,8 @@
 namespace Bagusindrayana\LaravelMaps\Mapbox;
 
 use Bagusindrayana\LaravelMaps\Mapbox\Event\MapboxEvent;
+use Bagusindrayana\LaravelMaps\RawJs;
+use Closure;
 use ReflectionFunction;
 
 class MapboxMethod {
@@ -25,7 +27,7 @@ class MapboxMethod {
             'zoomend',
             'moveend',
         ],
-        "\Bagusindrayana\LaravelMaps\Mapbox\Event\MapboxMouseEvent"=>[
+        "\Bagusindrayana\LaravelMaps\Mapbox\Event\MapboxResponseEvent"=>[
             'click',
             'dblclick',
             'mousedown',
@@ -111,6 +113,19 @@ class MapboxMethod {
         return $this;
     }
 
+    public function addPopup($contents,$lngLat)
+    {
+        if($contents instanceof MapboxPopup){
+            $this->components[] = $contents;
+        } else {
+            $popup = new MapboxPopup();
+            $popup->lngLat($lngLat)
+            ->htmls($contents)
+            ->addTo($this);
+        }
+        return $this;
+    }
+
     public function on($eventName,$fun = null)
     {   
         if(is_object($eventName)){
@@ -118,15 +133,21 @@ class MapboxMethod {
         } else {
             foreach ($this->eventType as $key => $value) {
                 foreach ($value as $en) {
-                    if($eventName == $en){
+                    if(is_array($eventName) && in_array($en,$eventName)){
                         $eventName = new $key($eventName);
                         $this->components[] = $eventName;
+                    } else {
+                        if($eventName == $en){
+                            $eventName = new $key($eventName);
+                            $this->components[] = $eventName;
+                        }
                     }
+                    
                 }
             }
             
         }
-        if(!isset($eventName)){
+        if(!is_object($eventName)){
             $eventName = new MapboxEvent($eventName);
             $this->components[] = $eventName;
         }
@@ -136,6 +157,34 @@ class MapboxMethod {
         
     }
 
+
+    public function __call($method, $args)
+	{   
+        foreach ($args as $index => $arg) {
+            if(is_array($arg)){
+                $args[$index] = json_encode($arg);
+            } else if($arg instanceof Closure){
+                $args[$index] = $arg($this);
+            } else if(is_string($arg)){
+                $args[$index] = "`".$arg."`";
+            } else if($arg instanceof RawJs){
+                $args[$index] = $arg->result();
+            }
+        }
+		$this->components[] = $this->name.".$method(".implode(',',$args).");\r\n";
+        return $this;
+	}
+
+    public function rawJs($js)
+    {
+        if($js instanceof RawJs){
+            $this->components[] = $js;
+        } else {
+            $js = new RawJs($js);
+            $this->components[] = $js;
+        }
+        return $this;
+    }
    
 
     public function generateComponent()

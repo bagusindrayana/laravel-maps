@@ -44,7 +44,7 @@ class MapboxMap extends MapboxMethod {
 
     public function scripts()
     {   
-        
+        $this->result();
         return  view("laravel-maps::scripts",[
             "scripts" => is_array($this->js)?$this->js:[$this->js],
             "codes"=>$this->codes
@@ -61,7 +61,7 @@ class MapboxMap extends MapboxMethod {
         if(!isset($this->options["container"])){
             $this->options["container"] = $this->name;
         }
-        $this->codes .= "
+        $this->codes = "
         <script>
             mapboxgl.accessToken = '".config("laravel-maps.mapbox.mapbox_access_token")."';
             var {$this->name} = new mapboxgl.Map(".json_encode($this->options).");";

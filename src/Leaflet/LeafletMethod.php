@@ -3,6 +3,7 @@ namespace Bagusindrayana\LaravelMaps\Leaflet;
 
 use Bagusindrayana\LaravelMaps\Leaflet\Event\LeafletEvent;
 use Bagusindrayana\LaravelMaps\RawJs;
+use Closure;
 use ReflectionFunction;
 
 class LeafletMethod {
@@ -37,6 +38,22 @@ class LeafletMethod {
         ],
     ];
 
+    public function __call($method, $args)
+	{   
+        foreach ($args as $index => $arg) {
+            if(is_array($arg)){
+                $args[$index] = json_encode($arg);
+            } else if($arg instanceof Closure){
+                $args[$index] = $arg($this);
+            } else if(is_string($arg)){
+                $args[$index] = "`".$arg."`";
+            } else if($arg instanceof RawJs){
+                $args[$index] = $arg->result();
+            }
+        }
+		$this->components[] = $this->name.".$method(".implode(',',$args).");\r\n";
+        return $this;
+	}
 
 
     public function name($name)
@@ -308,80 +325,80 @@ class LeafletMethod {
         return $this;
     }
 
-    public function setView($latLng,$zoom = null)
-    {   
-        $this->latLng = $latLng;
-        if($zoom){
-            $this->setZoom($zoom);
-        }
-        return $this;
-    }
+    // public function setView($latLng,$zoom = null)
+    // {   
+    //     $this->latLng = $latLng;
+    //     if($zoom){
+    //         $this->setZoom($zoom);
+    //     }
+    //     return $this;
+    // }
 
-    public function setZoom($zoom)
-    {
-        $this->zoom = $zoom;
-        return $this;
-    }
+    // public function setZoom($zoom)
+    // {
+    //     $this->zoom = $zoom;
+    //     return $this;
+    // }
 
-    public function zoomIn($args,$options = null)
-    {
-        $this->setMethod("zoomIn",$args,$options);
-        return $this;
-    }
+    // public function zoomIn($args,$options = null)
+    // {
+    //     $this->setMethod("zoomIn",$args,$options);
+    //     return $this;
+    // }
 
-    public function zoomOut($args,$options = null)
-    {
-        $this->setMethod("zoomOut",$args,$options);
-        return $this;
-    }
+    // public function zoomOut($args,$options = null)
+    // {
+    //     $this->setMethod("zoomOut",$args,$options);
+    //     return $this;
+    // }
 
-    public function setZoomAround($args,$options = null)
-    {
-        $this->setMethod("setZoomAround",$args,$options);
-        return $this;
-    }
+    // public function setZoomAround($args,$options = null)
+    // {
+    //     $this->setMethod("setZoomAround",$args,$options);
+    //     return $this;
+    // }
 
-    public function fitBounds($args,$options = null)
-    {
-        $this->setMethod("fitBounds",$args,$options);
-        return $this;
-    }
+    // public function fitBounds($args,$options = null)
+    // {
+    //     $this->setMethod("fitBounds",$args,$options);
+    //     return $this;
+    // }
     
-    public function fitWorld($options = null)
-    {
-        $this->setMethod("fitWorld",null,$options);
-        return $this;
-    }
+    // public function fitWorld($options = null)
+    // {
+    //     $this->setMethod("fitWorld",null,$options);
+    //     return $this;
+    // }
 
-    public function panTo($args,$options = null)
-    {
-        $this->setMethod("panTo",$args,$options);
-        return $this;
-    }
+    // public function panTo($args,$options = null)
+    // {
+    //     $this->setMethod("panTo",$args,$options);
+    //     return $this;
+    // }
 
-    public function panBy($args,$options = null)
-    {
-        $this->setMethod("panBy",$args,$options);
-        return $this;
-    }
+    // public function panBy($args,$options = null)
+    // {
+    //     $this->setMethod("panBy",$args,$options);
+    //     return $this;
+    // }
 
-    public function flyTo($args,$options = null)
-    {
-        $this->setMethod("flyTo",$args,$options);
-        return $this;
-    }
+    // public function flyTo($args,$options = null)
+    // {
+    //     $this->setMethod("flyTo",$args,$options);
+    //     return $this;
+    // }
 
-    public function flyToBounds($args,$options = null)
-    {
-        $this->setMethod("flyToBounds",$args,$options);
-        return $this;
-    }
+    // public function flyToBounds($args,$options = null)
+    // {
+    //     $this->setMethod("flyToBounds",$args,$options);
+    //     return $this;
+    // }
 
-    public function locate($options = null)
-    {
-        $this->setMethod('locate',null,$options);
-        return $this;
-    }
+    // public function locate($options = null)
+    // {
+    //     $this->setMethod('locate',null,$options);
+    //     return $this;
+    // }
 
 
     public function generateComponent()

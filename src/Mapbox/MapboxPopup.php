@@ -18,7 +18,7 @@ class MapboxPopup
         if(is_array($options)){
             $this->options = $options;
         } else {
-            $this->htmls = $options;
+            $this->htmls($options);
             if(is_array($args)){
                 $this->options = $args;
             }
@@ -74,10 +74,16 @@ class MapboxPopup
 
     public function result($markerName = null)
     {   
-        $this->codes .= "var {$this->name} = new mapboxgl.Popup(".($this->options?json_encode($this->options):"").").setHTML(`".$this->htmls."`);\r\n";
+        $this->codes .= "var {$this->name} = new mapboxgl.Popup(".($this->options?json_encode($this->options):"").").setHTML(".$this->htmls.");\r\n";
         
         if($this->lngLat){
-            $this->codes .= "{$this->name}.setLngLat(".json_encode($this->lngLat).");\r\n";
+            if(is_string($this->lngLat)){
+                $this->codes .= "{$this->name}.setLngLat(".$this->lngLat.");\r\n";
+            } else if($this->lngLat instanceof RawJs){
+                $this->codes .= "{$this->name}.setLngLat(".$this->lngLat->result().");\r\n";
+            } else {
+                $this->codes .= "{$this->name}.setLngLat(".json_encode($this->lngLat).");\r\n";
+            }
         }
 
         if($this->attachMarker && $markerName){

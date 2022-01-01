@@ -10,6 +10,7 @@ class LeafletGeojson
     public $options;
     private $codes;
     private $components = [];
+    private $optionMethods = ["pointToLayer","style","onEachFeature","filter","coordsToLatLng"];
 
     public function __construct($feature,$options = null)
     {
@@ -17,9 +18,6 @@ class LeafletGeojson
         if($options){
             if(isset($options['name'])){
                 $this->name = $options['name'];
-            }
-            if(is_array($options) && isset($options['onEachFeature'])){
-                
             }
             $this->options = $options;
         }
@@ -79,24 +77,27 @@ class LeafletGeojson
 
     public function result($mapName = null)
     {   
-        if($this->options['onEachFeature'] instanceof RawJs){
-            $this->options['onEachFeature'] = $this->options['onEachFeature']->result();
+        foreach ($this->options as $key => $option) {
+            if($option instanceof RawJs){
+                $this->options[$key] = $option->result();
+            }
         }
+
         $jsonOptions = trim(preg_replace('/\s\s+|\s$/'," ",json_encode($this->options)));
         $string = str_replace(array('\n', "\r"), '', $jsonOptions);
         $string2 = str_replace(array('\n', "\r"), '', trim(preg_replace('/\s+/'," ",'"'.$this->options['onEachFeature'].'"')));
-        
-        if(isset($this->options['onEachFeature'])){
-            
-            $jsonOptions = str_replace($string2,$this->options['onEachFeature'],$string);
-            
+       
+        foreach ($this->options as $key => $option) {
+            if(in_array($key,$this->optionMethods)){
+                
+                $jsonOptions = str_replace($string2,$this->options[$key],$string);
+            }
         }
+       
+        
         if(is_string($this->feature)){
             $this->codes .= "var {$this->name} = L.geoJSON({$this->feature}".($this->options?",$jsonOptions":"").");\r\n";
         } else {
-            
-            
-            
             $this->codes .= "var {$this->name} = L.geoJSON(".json_encode($this->feature).($this->options?",$jsonOptions":"").");\r\n";
         }
         if($mapName){

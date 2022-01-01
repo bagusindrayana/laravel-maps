@@ -84,7 +84,7 @@ class LeafletMap extends LeafletMethod
 
     public function scripts()
     {   
-        
+        $this->result();
         return  view("laravel-maps::scripts",[
             "scripts" => is_array($this->js)?$this->js:[$this->js],
             "codes"=>$this->codes
@@ -94,15 +94,15 @@ class LeafletMap extends LeafletMethod
 
     public function result($mapName = null)
     {   
-        $this->codes .= "
+        $this->codes = "
         <script>
-            var {$this->name} = L.map('{$this->name}',".json_encode($this->options).");";
+            var {$this->name} = L.map('{$this->name}',".json_encode($this->options).");\r\n";
             $this->generateComponent();
-            if($this->latLng){
-                $this->codes .= "{$this->name}.setView(".json_encode($this->latLng).", $this->zoom);";
-            } else {
-                $this->codes .= "{$this->name}.fitWorld();";
-            }
+            // if($this->latLng){
+            //     $this->codes .= "{$this->name}.setView(".json_encode($this->latLng).", $this->zoom);";
+            // } else {
+            //     $this->codes .= "{$this->name}.fitWorld();";
+            // }
             $this->codes .= "
             L.tileLayer('{$this->tileLayer}', {
                 attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'
