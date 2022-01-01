@@ -4,8 +4,8 @@ namespace Bagusindrayana\LaravelMaps\Leaflet;
 class LeafletMap extends LeafletMethod
 {   
     
-    public $css;
-    public $js;
+    public $css = ["https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"];
+    public $js = ["https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"];
     public $name = "leafletMap";
     public $options = [];
     public $tileLayer = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -20,8 +20,8 @@ class LeafletMap extends LeafletMethod
 
     public function init($name = null, $options = null)
     {   
-        $this->css =  config("laravel-maps.leaflet.css");
-        $this->js = config("laravel-maps.leaflet.js");
+        $this->css =  config("laravel-maps.leaflet.css") ?? $this->css;
+        $this->js = config("laravel-maps.leaflet.js") ?? $this->js;
         $this->name = $name ?? $this->name;
         $this->options = $options ?? $this->options; 
         return $this;

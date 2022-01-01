@@ -2,8 +2,8 @@
 namespace Bagusindrayana\LaravelMaps\Mapbox;
 
 class MapboxMap extends MapboxMethod {
-    public $css;
-    public $js;
+    public $css = ["https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css"];
+    public $js = ["https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"];
     public $name = "mapboxMap";
     public $options = [];
     public $zoom = 10;
@@ -22,8 +22,8 @@ class MapboxMap extends MapboxMethod {
     public function init($name = null, $options = null)
     {   
         
-        $this->css =  config("laravel-maps.mapbox.css");
-        $this->js = config("laravel-maps.mapbox.js");
+        $this->css =  config("laravel-maps.mapbox.css") ?? $this->css;
+        $this->js = config("laravel-maps.mapbox.js") ?? $this->js;
         if(is_array($name)){
             $this->options = $options ?? $this->options;
         } else {
