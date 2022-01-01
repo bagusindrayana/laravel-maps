@@ -18,7 +18,7 @@ Add LaravelMapServiceProvider::class to config/app.php
 
 ## Leaflet
 
-### Fetures
+### Features
 - marker
 - circle
 - polygon
@@ -60,7 +60,7 @@ $map = LaravelMaps::leaflet('map')
 
 ## Mapbox
 
-### Fetures
+### Features
 - marker
 - geojson
 - basic event and method
