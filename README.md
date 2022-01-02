@@ -23,6 +23,33 @@ publish provider
 php artisan vendor:publish --provider=Bagusindrayana\LaravelMaps\LaravelMapsServiceProvider
 ```
 
+### Usage
+
+in controller
+
+```php
+$map = LaravelMaps::leaflet('map')
+->setView([51.505, -0.09], 13);
+
+return view('your-view',compact('map'));
+```
+
+in view
+```html
+<html>
+<head>
+    <title>My Map</title>
+    {!! @$map->styles() !!}
+</head>
+<body>
+    {!! @$map->render() !!}
+    {!! @$map->scripts() !!}  
+</body>
+</html>
+```
+
+
+
 ## Leaflet
 
 ### Features
