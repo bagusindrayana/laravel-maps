@@ -18,6 +18,11 @@ Add LaravelMapServiceProvider::class to config/app.php
     
 ```
 
+publish provider
+```bash
+php artisan vendor:publish --provider=Bagusindrayana\LaravelMaps\LaravelMapsServiceProvider
+```
+
 ## Leaflet
 
 ### Features
@@ -30,6 +35,7 @@ Add LaravelMapServiceProvider::class to config/app.php
 ### Basic Usage
 
 ```php
+//'map' is variable name will be use in javascript code
 $map = LaravelMaps::leaflet('map')
 ->setView([51.505, -0.09], 13)
 ->addMarker(function(LeafletMarker $marker){
@@ -70,6 +76,7 @@ $map = LaravelMaps::leaflet('map')
 ### Basic Usage
 
 ```php
+//'map' is variable name will be use in javascript code
 $map = LaravelMaps::mapbox('map',[
     "center"=>[106.827293,-6.174465],
     "zoom"=>13,
