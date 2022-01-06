@@ -93,6 +93,13 @@ $map = LaravelMaps::leaflet('map')
 ->addPopup("I am a standalone popup.",[51.513, -0.09]);
 ```
 
+### Method & Event
+
+method are dynamic so you can use most method from original leaflet https://leafletjs.com/reference.html#map-method
+argument or parameter in method can be array,Closure,string,and RawJs class
+
+
+
 ## Mapbox
 
 ### Features
@@ -117,3 +124,8 @@ $map->on('load',function($m){
     });
 });
 ```
+
+### Method & Event
+
+method are dynamic so you can use most method from original mapbox https://docs.mapbox.com/mapbox-gl-js/api/map/#map-instance-members
+argument or parameter in method can be array,Closure,string,and RawJs class
